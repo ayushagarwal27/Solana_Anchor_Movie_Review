@@ -55,7 +55,7 @@ pub mod anchor_movie_review_program {
 pub struct AddMovieReview<'info> {
     #[account(
         init,
-        seeds=[title.as_bytes(), initializer.key().as_ref]
+        seeds=[title.as_bytes(), initializer.key().as_ref()],
         bump,
         payer = initializer,
         space =DISCRIMINATOR + MovieAccountState::INIT_SPACE
@@ -71,9 +71,9 @@ pub struct AddMovieReview<'info> {
 pub struct UpdateMovieReview<'info> {
     #[account(
         mut,
-        seeds=[title.as_bytes(), initializer.key().as_ref]
+        seeds=[title.as_bytes(), initializer.key().as_ref()],
         bump,
-        realloc = DISCRIMINATOR + MovieAccountState::INIT_SPACE
+        realloc = DISCRIMINATOR + MovieAccountState::INIT_SPACE,
         realloc::payer = initializer,
         realloc::zero = true,
     )]
@@ -88,7 +88,7 @@ pub struct UpdateMovieReview<'info> {
 pub struct DeleteMovieReview<'info> {
     #[account(
         mut,
-        seeds=[title.as_bytes(), initializer.key().as_ref]
+        seeds=[title.as_bytes(), initializer.key().as_ref()],
         bump,
         close = initializer
     )]

@@ -3,6 +3,7 @@
 [features]
 resolution = true
 skip-lint = false
+seeds = true
 
 [programs.localnet]
 anchor_movie_review_program = "6NA441G9Z58G7FNxqjSUDbRpScPF9KzQQEHfDCe9GhqS"
