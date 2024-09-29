@@ -8,7 +8,7 @@ const MAX_RATING: u8 = 5;
 const MAX_TITLE_LENGTH: usize = 20;
 const MAX_DESCRIPTION_LENGTH: usize = 50;
 
-// #[program]
+#[program]
 pub mod anchor_movie_review_program {
     use super::*;
 
@@ -43,6 +43,11 @@ pub mod anchor_movie_review_program {
         moview_review.rating = rating;
         Ok(())
     }
+
+    pub fn delete_movie_review(ctx: Context<DeleteMovieReview>, title: String) -> Result<()> {
+        msg!("Movie review for {} deleted", title);
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -71,6 +76,21 @@ pub struct UpdateMovieReview<'info> {
         realloc = DISCRIMINATOR + MovieAccountState::INIT_SPACE
         realloc::payer = initializer,
         realloc::zero = true,
+    )]
+    pub movie_review: Account<'info, MovieAccountState>,
+    #[account(mut)]
+    pub initializer: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+#[instruction(title:String)]
+pub struct DeleteMovieReview<'info> {
+    #[account(
+        mut,
+        seeds=[title.as_bytes(), initializer.key().as_ref]
+        bump,
+        close = initializer
     )]
     pub movie_review: Account<'info, MovieAccountState>,
     #[account(mut)]
