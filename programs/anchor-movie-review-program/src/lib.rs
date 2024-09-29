@@ -28,6 +28,21 @@ pub mod anchor_movie_review_program {
         moview_review.rating = rating;
         Ok(())
     }
+
+    pub fn update_movie_review(ctx: Context<UpdateMovieReview>, title: String, description: String, rating: u8) -> Result<()> {
+        require!(rating >= MIN_RATING && rating <= MAX_RATING, MovieReviewError::InvalidRating);
+        require!(description.len() <= MAX_DESCRIPTION_LENGTH, MovieReviewError::DescriptionTooLong);
+
+        msg!("Movie Review account space reallocated");
+        msg!("Title: {}", title);
+        msg!("Description: {}", description);
+        msg!("Rating: {}", rating);
+
+        let moview_review = &mut ctx.accounts.movie_review;
+        moview_review.description = description;
+        moview_review.rating = rating;
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -46,6 +61,22 @@ pub struct AddMovieReview<'info> {
     pub system_program: Program<'info, System>,
 }
 
+#[derive(Accounts)]
+#[instruction(title:String, description:String)]
+pub struct UpdateMovieReview<'info> {
+    #[account(
+        mut,
+        seeds=[title.as_bytes(), initializer.key().as_ref]
+        bump,
+        realloc = DISCRIMINATOR + MovieAccountState::INIT_SPACE
+        realloc::payer = initializer,
+        realloc::zero = true,
+    )]
+    pub movie_review: Account<'info, MovieAccountState>,
+    #[account(mut)]
+    pub initializer: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
 
 #[account]
 #[derive(InitSpace)]
